@@ -5,13 +5,13 @@ module.exports = {
         node: true
     },
     extends: [
-        "eslint:recommended",
+        'eslint:recommended',
         'plugin:react/recommended',
         'standard-with-typescript',
-        "plugin:@typescript-eslint/recommended",
+        'plugin:@typescript-eslint/recommended',
     ],
     overrides: [],
-    parser: "@typescript-eslint/parser",
+    parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
