@@ -65,11 +65,11 @@ class Calculator extends React.Component <any, any> {
     this.setState({ scale: 'c', temperature })
   }
 
-  handleFahrenheitChange (temperature: any) {
+  handleFahrenheitChange (temperature: any): void {
     this.setState({ scale: 'f', temperature })
   }
 
-  render () {
+  render (): JSX.Element {
     const scale = this.state.scale
     const temperature = this.state.temperature
     const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature
