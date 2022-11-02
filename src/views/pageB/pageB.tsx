@@ -4,11 +4,11 @@ const scaleNames: any = {
   f: 'Fahrenheit'
 }
 
-function toCelsius (fahrenheit: number) {
+function toCelsius (fahrenheit: number): number {
   return (fahrenheit - 32) * 5 / 9
 }
 
-function toFahrenheit (celsius: number) {
+function toFahrenheit (celsius: number): number {
   return (celsius * 9 / 5) + 32
 }
 
