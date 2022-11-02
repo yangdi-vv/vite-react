@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "paths": []
+    "paths": {}
   },
   "include": ["./" ,"src", "vite.config.ts"],
   "exclude": ["node_modules"],

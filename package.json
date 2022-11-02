@@ -36,11 +36,6 @@
     "pre-commit": "lint-staged",
     "commit-msg": "validate-commit-msg"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "npx eslint ."

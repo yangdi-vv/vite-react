@@ -61,7 +61,7 @@ class Calculator extends React.Component <any, any> {
     this.state = { temperature: '', scale: 'c' }
   }
 
-  handleCelsiusChange (temperature: any) {
+  handleCelsiusChange (temperature: any): void {
     this.setState({ scale: 'c', temperature })
   }
 
