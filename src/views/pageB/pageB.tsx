@@ -1,4 +1,5 @@
 import React from 'react'
+
 const scaleNames: any = {
   c: 'Celsius',
   f: 'Fahrenheit'
@@ -20,7 +21,7 @@ const tryConvert = (temperature: any, convert: any): JSX.Element | string => {
   const output = convert(input)
   const rounded = Math.round(output * 1000) / 1000
   return rounded.toString()
-};
+}
 
 function BoilingVerdict (props: any): JSX.Element {
   if (props.celsius >= 100) {
@@ -36,11 +37,11 @@ class TemperatureInput extends React.Component <TemperatureInputInterface> {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  handleChange (e: any) {
+  handleChange (e: any): void {
     this.props.onTemperatureChange(e.target.value)
   }
 
-  render () {
+  render (): JSX.Element {
     const temperature = this.props.temperature
     const scale = this.props.scale
     return (
