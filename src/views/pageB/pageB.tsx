@@ -22,7 +22,7 @@ const tryConvert = (temperature: any, convert: any): JSX.Element | string => {
   return rounded.toString()
 };
 
-function BoilingVerdict (props: any) {
+function BoilingVerdict (props: any): JSX.Element {
   if (props.celsius >= 100) {
     return <p>The water would boil.</p>
   }
