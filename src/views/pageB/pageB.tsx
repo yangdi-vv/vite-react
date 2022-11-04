@@ -1,96 +1,155 @@
-import React from 'react'
+import React, { Component, ReactNode } from 'react'
+import * as THREE from 'three'
 
-const scaleNames: any = {
-  c: 'Celsius',
-  f: 'Fahrenheit'
-}
-
-function toCelsius (fahrenheit: number): number {
-  return (fahrenheit - 32) * 5 / 9
-}
-
-function toFahrenheit (celsius: number): number {
-  return (celsius * 9 / 5) + 32
-}
-
-const tryConvert = (temperature: any, convert: any): JSX.Element | string => {
-  const input = parseFloat(temperature)
-  if (Number.isNaN(input)) {
-    return ''
-  }
-  const output = convert(input)
-  const rounded = Math.round(output * 1000) / 1000
-  return rounded.toString()
-}
-
-function BoilingVerdict (props: any): JSX.Element {
-  if (props.celsius >= 100) {
-    return <p>The water would boil.</p>
-  }
-  return <p>The water would not boil.</p>
-}
-
-interface TemperatureInputInterface { scale: string, temperature: any, onTemperatureChange: (temperature: any) => void }
-class TemperatureInput extends React.Component <TemperatureInputInterface> {
+class PageB extends Component <any, {
+  renderer: any
+  camera: any
+  scene: any
+  cubes: any
+}> {
   constructor (props: any) {
     super(props)
-    this.handleChange = this.handleChange.bind(this)
+    this.state = {
+      renderer: null,
+      camera: null,
+      scene: null,
+      cubes: null
+    }
   }
 
-  handleChange (e: any): void {
-    this.props.onTemperatureChange(e.target.value)
+  componentDidMount (): void {
+    this.initModel()
   }
 
-  render (): JSX.Element {
-    const temperature = this.props.temperature
-    const scale = this.props.scale
+  // init model
+  initModel (): void {
+    // init renderer
+    const canvas = document.querySelector('#model') as HTMLCanvasElement
+    const renderer = new THREE.WebGLRenderer({ canvas })
+
+    // init camera
+    const camera = this.addCamera(75, 2, 0.1, 5, 2)
+
+    // init scene
+    const scene = new THREE.Scene()
+
+    // add fog on scene
+    this.addFog(scene)
+
+    // add light on scene
+    this.addLight(scene)
+
+    // init boxes
+    const cubes = this.addBox(scene)
+    this.setState({
+      renderer,
+      camera,
+      scene,
+      cubes
+    })
+
+    // move cubes
+    requestAnimationFrame(this.renderCanvas.bind(this))
+  }
+
+  // add first camera
+  addCamera (fov: number, aspect: number, near: number, far: number, z: number): object {
+    const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+    camera.position.z = 2
+    return camera
+  }
+
+  // add background fog
+  addFog (scene: any): void {
+    const near = 1
+    const far = 2
+    const color = 'lightblue'
+    scene.fog = new THREE.Fog(color, near, far)
+    scene.background = new THREE.Color(color)
+  }
+
+  // add direction light
+  addLight (scene: any): void {
+    const color = '#fff'
+    const intensity = 1
+    const light = new THREE.DirectionalLight(color, intensity)
+    light.position.set(-1, 2, 4)
+    scene.add(light)
+  }
+
+  // add boxes
+  addBox (scene: any): any[] {
+    const boxWidth = 1
+    const boxHeight = 1
+    const boxDepth = 1
+    // default boxType
+    const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth)
+
+    function makeInstance (geometry: THREE.BoxGeometry, color: string, x: number): any {
+      // material details
+      const material = new THREE.MeshPhongMaterial({ color })
+      material.shininess = 150
+      const cube = new THREE.Mesh(geometry, material)
+      scene.add(cube)
+
+      cube.position.x = x
+
+      return cube
+    }
+    return [
+      makeInstance(geometry, '#44aa88', 0),
+      makeInstance(geometry, '#44aa88', -2),
+      makeInstance(geometry, '#44aa88', 2)
+    ]
+  }
+
+  // should resize canvs ?
+  shouldResize (renderer: any): boolean {
+    const canvas = renderer.domElement
+    const width = canvas.clientWidth
+    const height = canvas.clientHeight
+    const needResize = canvas.width !== width || canvas.height !== height
+    if (needResize) {
+      renderer.setSize(width, height, false)
+    }
+    return needResize
+  }
+
+  // render canvas
+  renderCanvas (time: number): void {
+    const {
+      renderer,
+      scene,
+      camera,
+      cubes
+    } = this.state
+    time *= 0.001
+
+    if (this.shouldResize(renderer)) {
+      const canvas = renderer.domElement
+      camera.aspect = canvas.clientWidth / canvas.clientHeight
+      camera.updateProjectionMatrix()
+    }
+
+    // change angle of cube
+    cubes.forEach((cube: any, idx: number) => {
+      const speed = 1 + idx * 0.1
+      const rot = time * speed
+
+      cube.rotation.x = rot
+      cube.rotation.y = rot
+    })
+
+    renderer.render(scene, camera)
+
+    requestAnimationFrame(this.renderCanvas.bind(this))
+  }
+
+  render (): ReactNode {
     return (
-            <fieldset>
-                <legend>Enter temperature in {scaleNames[scale]}:</legend>
-                <input value={temperature}
-                       onChange={this.handleChange} />
-            </fieldset>
+        <canvas id="model"/>
     )
   }
 }
 
-class Calculator extends React.Component <any, any> {
-  constructor (props: any) {
-    super(props)
-    this.handleCelsiusChange = this.handleCelsiusChange.bind(this)
-    this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this)
-    this.state = { temperature: '', scale: 'c' }
-  }
-
-  handleCelsiusChange (temperature: any): void {
-    this.setState({ scale: 'c', temperature })
-  }
-
-  handleFahrenheitChange (temperature: any): void {
-    this.setState({ scale: 'f', temperature })
-  }
-
-  render (): JSX.Element {
-    const scale = this.state.scale
-    const temperature = this.state.temperature
-    const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature
-    const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature
-
-    return (
-            <div>
-                <TemperatureInput
-                    scale="c"
-                    temperature={celsius}
-                    onTemperatureChange={this.handleCelsiusChange} />
-                <TemperatureInput
-                    scale="f"
-                    temperature={fahrenheit}
-                    onTemperatureChange={this.handleFahrenheitChange} />
-                <BoilingVerdict
-                    celsius={parseFloat(celsius)} />
-            </div>
-    )
-  }
-}
-
-export default Calculator
+export default PageB

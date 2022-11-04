@@ -1,9 +1,3 @@
-import React from 'react'
-
-function PageA (): JSX.Element {
-  return (<h1>
-        pageA
-    </h1>)
-}
+import PageA from './pageA'
 
 export default PageA
