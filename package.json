@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "npx eslint .",
-    "lint:fix": "npx eslint . --fix"
+    "lint": "npx eslint src/**/*.{ts,tsx} && npx stylelint src/**/*.scss",
+    "lint:fix": "npx eslint src/**/*.{ts,tsx} --fix && npx stylelint src/**/*.scss --fix"
   },
   "dependencies": {
     "mobx": "^6.6.2",
@@ -37,7 +37,10 @@
     "eslint-plugin-react": "^7.31.10",
     "husky": "^4.3.8",
     "lint-staged": "^13.0.3",
-    "sass": "^1.56.0",
+    "scss": "^0.2.4",
+    "stylelint": "^14.14.1",
+    "stylelint-config-standard": "^29.0.0",
+    "stylelint-config-standard-scss": "^6.1.0",
     "typescript": "^4.8.4",
     "vite": "^3.2.0",
     "vite-plugin-eslint": "^1.8.1"
@@ -50,6 +53,9 @@
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "npx eslint"
+    ],
+    "src/**/*.{scss}": [
+      "npx stylelint"
     ]
   },
   "config": {
